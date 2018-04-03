@@ -3,7 +3,7 @@
 import serial
 import time
 
-port = "/dev/ttyAMA0"
+port = "COM1"
 #port = "/dev/ttyS0"
 
 def readLine(port):
@@ -11,7 +11,7 @@ def readLine(port):
     while True:
         ch = port.read()
         s += ch
-        if ch == '\r':
+		if ch == '\r':
             return s
 
 ser = serial.Serial(port, baudrate = 1200)
