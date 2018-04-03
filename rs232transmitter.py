@@ -1,6 +1,7 @@
 #RS232 transmitter
 
 import serial
+import struct
  
 port = "COM1"
 baud = 1200
@@ -23,5 +24,6 @@ while True:
 		ser.close()
 		print('Closed serial communication!')
 		exit()
-	ser.write(b'50')
+	val = val.encode('utf-8')
+	ser.write(val)
 	print('Sent "' + str(val) + '" to ' + str(ser.name))
