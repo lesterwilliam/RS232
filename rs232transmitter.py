@@ -1,24 +1,21 @@
 #RS232 transmitter
 
 import serial
-import time
-
+ 
 port = "COM1"
-#port = "/dev/ttyS0"
-
-def readLine(port):
-    s = ""
-    while True:
-        ch = port.read()
-        s += ch
-		if ch == '\r':
-            return s
-
-ser = serial.Serial(port, baudrate = 1200)
-print "starting"
+baud = 1200
+ 
+ser = serial.Serial(port, baud, timeout=1)
+    # open the serial port
+if ser.isOpen():
+     print(ser.name + ' is open...')
+ 
 while True:
-    time.sleep(1)
-    print "sending synch"
-    ser.write("A")
-    rcv = readLine(ser)
-    print "received:", rcv
+    cmd = input("Enter command or 'exit':")
+    if cmd == 'exit':
+        ser.close()
+        exit()
+    else:
+        ser.write(cmd.encode('ascii')+'\r\n')
+        out = ser.read()
+        print('Receiving...'+out)
