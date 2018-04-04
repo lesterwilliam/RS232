@@ -48,11 +48,14 @@ def Standby():
 		Standby()
 	elif KeyboardInput == 'send':
 		ByteWrite()
+	elif KeyboardInput == 'exit':
+		clear()
+		ser.close()
+		exit()
 	
 def OpenHelp():
 	clear()
 	print('Insert decimal value between 0 and 255 and press enter.\n')
-	print('Type <baud> to change baud rate.\n')
 	print('Type <exit> to close program.\n')
 	input('Quit help with any key.')
 	Standby()
@@ -70,17 +73,17 @@ def PortSel(port):
 def ByteWrite():
 	clear()
 	val = input('Please enter value to send!')
-	if not val.isdigit():
+	if val == 'menu' or val == 'back' or val == 'close' or val == 'exit':
+		Standby()
+	elif not val.isdigit():
 		print(Fore.RED + '\nPlease only input integer between 0 and 255 or command.\n' + Style.RESET_ALL)
+		ByteWrite()
 	elif int(val) < 0 or int(val) > 255:
 		print(Fore.RED + '\nPlease only input integer between 0 and 255 or command.\n' + Style.RESET_ALL)
+		ByteWrite()
 	else:
-		# put val into a bytearray, integer-cast
 		valBytearray = ([int(val)])
-		
-		# write complete array to serial port
 		ser.write(valBytearray)
 		print(Fore.GREEN + 'Sent "' + str(val) + '" to ' + str(ser.name) + '.\n' + Style.RESET_ALL)
-	input()
-	Standby()
+		ByteWrite()
 Init()
