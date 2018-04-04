@@ -10,23 +10,19 @@ from colorama import Fore, Back, Style
 clear = lambda: os.system('cls')
 clear()
 
-port = "COM1"
-baud = 1200
+DefaultPort = "COM1"
+DefaultBaud = 1200
 timeout = 1
 
-ser = serial.Serial(port, baud, timeout=1)
+ser = serial.Serial(DefaultPort, DefaultBaud, timeout=1)
 
 def Init():
 	PortSel()
 	BaudSel()
 	ser.close()
 	Standby()
-	
-#def Loop():
-	#while True:
 
 def Standby():
-	clear()
 	KeyboardInput = input('Enter command or use <help>')
 	
 	if KeyboardInput == 'help':
@@ -79,10 +75,22 @@ def OpenHelp():
 	Standby()
 	
 def PortSel():
-	ser.port = input('Please enter serial port. Leave blank for default port COM1.\n')
+	temp = input('Please enter serial port. Leave blank for default port COM1.')
+	if temp == '':
+		ser.port = DefaultPort
+		print('Default port ' + Fore.GREEN + 'COM1 ' + Style.RESET_ALL + 'chosen.\n')
+	else:
+		ser.port = temp
+		print('Port ' + Fore.GREEN + ser.port + Style.RESET_ALL + ' chosen.')
 		
 def BaudSel():
-	ser.baudrate = int(input('Please enter baud rate. Leave blank for default rate 1200.\n'))
+	temp = input('Please enter baudrate. Leave blank for default baudrate of 1200.')
+	if temp == '':
+		ser.baudrate = DefaultBaud
+		print('Default baudrate of ' + Fore.GREEN + '1200 ' + Style.RESET_ALL + 'chosen.\n')
+	else:
+		ser.baudrate = int(temp)
+		print('Baudrate ' + Fore.GREEN + str(ser.baudrate) + Style.RESET_ALL + ' chosen.')
 		
 def ByteWrite():
 	clear()
