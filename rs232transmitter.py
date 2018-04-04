@@ -17,29 +17,21 @@ if ser.isOpen():
 else:
 	print('Could not open serial port ' + str(ser.name) + '!')
 	exit()
-	
+
 # endless loop, listens to command line and writes to serial port
 while True:
+	# read input and save it as unicode into val
 	val = input(inputMSG)
+	
+	# exit condition
 	if val == "exit":
 		ser.close()
 		print('Closed serial communication!')
 		exit()
-	val = int(val.encode('utf-8'))
-	#ser.write(val.encode('utf-8'))
-	ser.write(val)
-	print('Sent "' + str(val) + '" to ' + str(ser.name))
 	
+	# put val into a bytearray, integer-cast
+	valBytearray = ([int(val)])
 	
-	
-	
-# endless loop, listens to command line and writes to serial port
-while True:
-	val = input(inputMSG)
-	if val == "exit":
-		ser.close()
-		print('Closed serial communication!')
-		exit()
-	val = chr(int(val))
-	ser.write(val.encode('utf-8'))
+	# write complete array to serial port
+	ser.write(valBytearray)
 	print('Sent "' + str(val) + '" to ' + str(ser.name))
