@@ -17,8 +17,9 @@ timeout = 1
 ser = serial.Serial(port, baud, timeout=1)
 
 def Init():
-	PortSel(port)
-	BaudSel(baud)
+	PortSel()
+	BaudSel()
+	ser.close()
 	Standby()
 	
 #def Loop():
@@ -32,9 +33,13 @@ def Standby():
 		OpenHelp()
 	elif KeyboardInput == 'open':
 		if ser.isOpen():
-			print(Fore.GREEN + ser.name + ' is open!\n' + Style.RESET_ALL)
+			print(Fore.YELLOW + ser.name + ' is already open!\n' + Style.RESET_ALL)
 		else:
-			print('\nCould not open serial port ' + str(ser.name) + '!\n')
+			ser.open()
+			if ser.isOpen():
+				print(Fore.GREEN + ser.name + ' is open!\n' + Style.RESET_ALL)
+			else:
+				print('\nCould not open serial port ' + str(ser.name) + '!\n')
 		input()
 		Standby()
 	elif KeyboardInput == 'close':
@@ -48,27 +53,36 @@ def Standby():
 		Standby()
 	elif KeyboardInput == 'send':
 		ByteWrite()
+	elif KeyboardInput == 'port':
+		PortSel()
+		Standby()
+	elif KeyboardInput == 'baud':
+		BaudSel()
+		Standby()
 	elif KeyboardInput == 'exit':
 		clear()
 		ser.close()
 		exit()
+	elif KeyboardInput == '':
+		Standby()
 	
 def OpenHelp():
 	clear()
-	print('Insert decimal value between 0 and 255 and press enter.\n')
-	print('Type <exit> to close program.\n')
-	input('Quit help with any key.')
+	print('This program is designed to write single bytes to a RS232 port.\n')
+	print('Type ' + Fore.GREEN + '<open>' + Style.RESET_ALL + ' to open a serial connection.')
+	print('Type ' + Fore.GREEN + '<close>' + Style.RESET_ALL + ' to close a serial connection.')
+	print('Type ' + Fore.GREEN + '<send>' + Style.RESET_ALL + ' to send data.')
+	print('Type ' + Fore.GREEN + '<port>' + Style.RESET_ALL + ' to change serial port.')
+	print('Type ' + Fore.GREEN + '<baud>' + Style.RESET_ALL + ' to change baudrate.')
+	print('Type ' + Fore.GREEN + '<exit>' + Style.RESET_ALL + ' to close program.')
+	input('\nQuit help with any key.')
 	Standby()
 	
-def BaudSel(baud):
-	baud = input('Please enter baud rate. Leave blank for default rate 1200.')
-	if not baud.isdigit() or baud == "":
-		baud = 1200
-	
-def PortSel(port):
-	port = input('Please enter serial port. Leave blank for default port COM1.')
-	if port != 'COM1':
-		port = 'COM1'
+def PortSel():
+	ser.port = input('Please enter serial port. Leave blank for default port COM1.\n')
+		
+def BaudSel():
+	ser.baudrate = int(input('Please enter baud rate. Leave blank for default rate 1200.\n'))
 		
 def ByteWrite():
 	clear()
@@ -83,7 +97,12 @@ def ByteWrite():
 		ByteWrite()
 	else:
 		valBytearray = ([int(val)])
-		ser.write(valBytearray)
-		print(Fore.GREEN + 'Sent "' + str(val) + '" to ' + str(ser.name) + '.\n' + Style.RESET_ALL)
-		ByteWrite()
+		if ser.isOpen():
+			ser.write(valBytearray)
+			print(Fore.GREEN + 'Sent "' + str(val) + '" to ' + str(ser.name) + '.\n' + Style.RESET_ALL)
+			ByteWrite()
+		else:
+			print(Fore.RED + 'There is no open connection!' + Style.RESET_ALL)
+			input()
+			Standby()
 Init()
