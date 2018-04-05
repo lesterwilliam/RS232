@@ -45,17 +45,26 @@ def CloseConnection():
 	
 def SerialUpdate():
 	nextByteToSend = CheckVar0.get() + CheckVar1.get() + CheckVar2.get() + CheckVar3.get() + CheckVar4.get() + CheckVar5.get() + CheckVar6.get() + CheckVar7.get()
-	print(nextByteToSend)
+	ser.write([int(nextByteToSend)])
 	
 def SendFF():
 	ser.write(([255]))
 	
 def Send00():
 	ser.write(([0]))
+	
+def UpdatePort():
+	ser.close()
+	ser.port = 'COM' + str((int(str(Lb1.curselection())[1:2])+1))
+	PortSel.set(ser.port)
+	ser.open()
+	print('Active port: ' + str(ser.port))
 
 # GUI stuff
 top = Tk()
-top.geometry("300x500")
+top.title("RS232 transmitter")
+top.geometry("500x500")
+top.wm_iconbitmap("Icon.ico")
 
 # Checkboxes
 CheckVar0 = IntVar()
@@ -76,33 +85,54 @@ C5 = Checkbutton(top, text = "Bit5", variable = CheckVar5, onvalue=32, offvalue=
 C6 = Checkbutton(top, text = "Bit6", variable = CheckVar6, onvalue=64, offvalue=0, height=0, width=20, command = SerialUpdate)
 C7 = Checkbutton(top, text = "Bit7", variable = CheckVar7, onvalue=128, offvalue=0, height=0, width=20, command = SerialUpdate)
 
-C0.pack()
-C1.pack()
-C2.pack()
-C3.pack()
-C4.pack()
-C5.pack()
-C6.pack()
-C7.pack()
+C0.place(x=-30,y=0)
+C1.place(x=-30,y=20)
+C2.place(x=-30,y=40)
+C3.place(x=-30,y=60)
+C4.place(x=80,y=0)
+C5.place(x=80,y=20)
+C6.place(x=80,y=40)
+C7.place(x=80,y=60)
+
+# Listbox
+Lb1 = Listbox(top, height=8, width = 25)
+Lb1.insert(1, "COM1")
+Lb1.insert(2, "COM2")
+Lb1.insert(3, "COM3")
+Lb1.insert(4, "COM4")
+Lb1.insert(5, "COM5")
+Lb1.insert(6, "COM6")
+Lb1.insert(7, "COM7")
+Lb1.insert(8, "COM8")
+
+Lb1.place(x=30,y=130)
 
 # Labels
-L1 = Label(top, text = "User Name")
-L1.pack( side = LEFT)
+#L1 = Label(top, text = "User Name")
+#L1.pack( side = LEFT)
 
-E1 = Entry(top, bd = 5)
-E1.pack(side = RIGHT)
+#E1 = Entry(top, bd = 5)
+#E1.pack(side = RIGHT)
+
+PortSel = StringVar()
+PortSelLabel = Label(top, textvariable = PortSel, relief = RAISED, width = 19)
+PortSelLabel.place(x=35, y=105)
 
 # Buttons
 Open = Button(top, text = "Open", command = OpenConnection)
-Open.place(x = 10, y = 10)
+Open.pack()
 
 Close = Button(top, text = "Close", command = CloseConnection)
-Close.place(x = 90, y = 10)
+Close.pack()
 
 SendFF = Button(top, text = "Send 0xFF", command = SendFF)
-SendFF.place(x = 10, y = 40)
+SendFF.pack()
 
 Send00 = Button(top, text = "Send 0x00", command = Send00)
-Send00.place(x = 90, y = 40)
+Send00.pack()
+
+Apply = Button(top, text = "Apply", command = UpdatePort)
+Apply.place(x=85, y=265)
+#Apply.place(x = 50, y = 70)
 
 top.mainloop()
