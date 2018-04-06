@@ -58,7 +58,7 @@ def UpdatePort():
 # GUI stuff
 top = Tk()
 top.title("RS232 transmitter")
-top.geometry("220x320")
+top.geometry("220x400")
 top.wm_iconbitmap("Icon.ico")
 
 # Checkboxes
@@ -90,7 +90,7 @@ C6.place(x=80,y=40)
 C7.place(x=80,y=60)
 
 # Listbox
-Lb1 = Listbox(top, height=8, width = 25)
+Lb1 = Listbox(top, height=11, width = 25)
 Lb1.insert(1, "COM1")
 Lb1.insert(2, "COM2")
 Lb1.insert(3, "COM3")
@@ -99,6 +99,7 @@ Lb1.insert(5, "COM5")
 Lb1.insert(6, "COM6")
 Lb1.insert(7, "COM7")
 Lb1.insert(8, "COM8")
+Lb1.insert(9, "COM9")
 
 Lb1.place(x=30,y=140)
 
@@ -112,6 +113,6 @@ SendRandom = Button(top, text = "Random", command = SendRandom)
 SendRandom.place(x=75, y=85)
 
 Apply = Button(top, text = "Apply", command = UpdatePort)
-Apply.place(x=85, y=280)
+Apply.place(x=85, y=325)
 
 top.mainloop()
